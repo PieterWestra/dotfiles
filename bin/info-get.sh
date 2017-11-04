@@ -1,30 +1,62 @@
-COLOR="\033[0;31m"
-NC="\033[0m" # No Color
+COLOR="\e[1;31m"
+NC="\e[0m"
 
-distroID=$(cat /etc/*release | grep DISTRIB_ID)
-distroRL=$(cat /etc/*release | grep DISTRIB_RELEASE)
-distroCD=$(cat /etc/*release | grep DISTRIB_CODENAME)
+new_line(){
+	echo
+}
 
-distro="${distroID##*=} ${distroRL##*=}"
+print_distro(){
+	distroID=$(cat /etc/*release | grep DISTRIB_ID)
+	distroRL=$(cat /etc/*release | grep DISTRIB_RELEASE)
+	distroCD=$(cat /etc/*release | grep DISTRIB_CODENAME)
+	
+	distro="${distroID##*=} ${distroRL##*=}"
 
-echo -e "${COLOR}Distribution:${NC}\t$distro"
-echo -e "${COLOR}Kernel:${NC}\t\t$(uname -r)"
-echo -e "${COLOR}Desktop:${NC}\t$DESKTOP_SESSION"
-echo -e "${COLOR}Shell:${NC}\t\t$SHELL"
-echo -e "${COLOR}User:${NC}\t\t$USER"
-echo -e "${COLOR}HOME:${NC}\t\t$HOME"
-echo -e "${COLOR}Working dir:${NC}\t$PWD"
+	echo -e "${COLOR}Distribution:${NC}\t$distro"
+}
 
-echo
+print_kernel(){
+	echo -e "${COLOR}Kernel:${NC}\t\t$(uname -r)"
+}
 
-# CPU info and remove unwanted characters from the string.
-cpu=$(cat /proc/cpuinfo | grep model\ name | head -n1)
-echo -e "${COLOR}CPU:${NC}\t\t${cpu##*: }"
+print_desktop(){
+	echo -e "${COLOR}Desktop:${NC}\t$DESKTOP_SESSION"
+}
 
-# RAM info
-ramTotal=$(cat /proc/meminfo | grep MemTotal)
-ramTotal=${ramTotal%???}
-ramTotal=${ramTotal##*:        }
+print_shell(){
+	echo -e "${COLOR}Shell:${NC}\t\t$SHELL"
+}
 
-# Convert kB to MB
-echo -e "${COLOR}RAM:${NC}\t\t$(($ramTotal / 1000)) MB"
+print_user(){
+	echo -e "${COLOR}User:${NC}\t\t$USER"
+}
+
+print_dirs(){
+	echo -e "${COLOR}HOME:${NC}\t\t$HOME"
+	echo -e "${COLOR}Working dir:${NC}\t$PWD"
+}
+
+print_cpu(){
+	cpu=$(cat /proc/cpuinfo | grep model\ name | head -n1)
+	echo -e "${COLOR}CPU:${NC}\t\t${cpu##*: }"
+}
+
+print_ram(){
+	ramTotal=$(cat /proc/meminfo | grep MemTotal)
+	ramTotal=${ramTotal%???}
+	ramTotal=${ramTotal##*:        } 
+	
+	# Convert kB to MB
+	echo -e "${COLOR}RAM:${NC}\t\t$(($ramTotal / 1000)) MB"
+}
+
+print_distro
+print_kernel
+print_desktop
+print_shell
+print_user
+print_dirs
+
+new_line
+print_cpu
+print_ram
