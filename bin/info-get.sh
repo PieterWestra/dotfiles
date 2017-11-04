@@ -20,7 +20,7 @@ print_distro(){
 }
 
 print_kernel(){
-	echo -e "${COLOR}Kernel version:${NC}\t\t$(uname -r)"
+	echo -e "${COLOR}Kernel version:${NC}\t\t$(uname -smr)"
 }
 
 print_desktop(){
